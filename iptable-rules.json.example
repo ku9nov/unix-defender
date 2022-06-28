@@ -1,0 +1,65 @@
+[
+    {
+        "version": "IPv4",
+        "chain": "INPUT",
+        "interface": "eth0",
+        "protocol": "udp",
+        "port": 53,
+        "allow": [
+            "8.8.8.8",
+            "8.8.4.4"
+        ]
+    },
+    {
+        "version": "IPv6",
+        "chain": "INPUT",
+        "interface": "eth0",
+        "protocol": "udp",
+        "port": 53,
+        "allow": [
+            "2001:4860:4860::8888",
+            "2001:4860:4860::8844"
+        ]
+    },
+    { 
+        "version": "IPv4",
+        "chain": "INPUT",
+        "interface": "eth0",
+        "protocol": "udp",
+        "port": 54,
+        "allow": [
+            "8.8.8.8",  
+            "8.8.4.4"
+        ]
+    },
+    { 
+        "version": "IPv4",
+        "chain": "INPUT",
+        "interface": "eth0",
+        "protocol": "udp",
+        "port": 55,
+        "allow": [
+            "0/0"
+        ]
+    },
+    { 
+        "version": "IPv6",
+        "chain": "INPUT",
+        "interface": "eth0",
+        "protocol": "udp",
+        "port": 55,
+        "allow": [
+            "0/0"   
+        ]
+    },
+    { 
+        "version": "IPv4",
+        "chain": "OUTPUT",
+        "interface": "eth0",
+        "protocol": "udp",
+        "port": 735,
+        "allow": [
+            "0/0"   
+        ]
+    }
+]
