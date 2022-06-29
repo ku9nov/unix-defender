@@ -10,13 +10,6 @@ import (
 	"unix-defender/utils"
 )
 
-const (
-	iptablesCommand  = "iptables"
-	ip6tablesCommand = "ip6tables"
-	saveIpv4Command  = "iptables-save"
-	saveIpv6Command  = "ip6tables-save"
-)
-
 func clearRules(IPv string) error {
 	if err := ipTablesManage(IPv, "-F"); err != nil {
 		log.Fatal(err)
@@ -88,7 +81,7 @@ func process(rules *utils.ConfigJson) error {
 func ipTablesManage(args ...string) error {
 	arg := args[1:]
 	if args[0] == "IPv4" {
-		cmd := exec.Command(iptablesCommand, arg...)
+		cmd := exec.Command(utils.IptablesCommand, arg...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			if bytes.Contains(out, []byte("This doesn't exist in IPv4Tables")) {
@@ -97,7 +90,7 @@ func ipTablesManage(args ...string) error {
 			return err
 		}
 	} else {
-		cmd := exec.Command(ip6tablesCommand, arg...)
+		cmd := exec.Command(utils.Ip6tablesCommand, arg...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			if bytes.Contains(out, []byte("This doesn't exist in IPv6Tables")) {
@@ -128,6 +121,6 @@ func IpTables() {
 			log.Fatal(err)
 		}
 	}
-	saveRules(saveIpv4Command, &configEnv.RulesBackupV4)
-	saveRules(saveIpv6Command, &configEnv.RulesBackupV6)
+	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
+	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
 }

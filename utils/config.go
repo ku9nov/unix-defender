@@ -7,6 +7,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	IptablesCommand    string = "iptables"
+	Ip6tablesCommand   string = "ip6tables"
+	SaveIpv4Command    string = "iptables-save"
+	SaveIpv6Command    string = "ip6tables-save"
+	RestoreIpv4Command string = "iptables-restore"
+	RestoreIpv6Command string = "ip6tables-restore"
+)
+
 type Config struct {
 	Protocol      string `mapstructure:"PROTOCOL"`
 	Host          string `mapstructure:"SCAN_HOST"`
