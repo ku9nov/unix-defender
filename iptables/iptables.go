@@ -123,4 +123,5 @@ func IpTables() {
 	}
 	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
 	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
+	utils.SendMessageToSlack(utils.InitialMessage, utils.GreenColor)
 }

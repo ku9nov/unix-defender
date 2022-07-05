@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
+	"unix-defender/utils"
 )
 
 func assertEq(first []string, second []string) bool {
@@ -45,9 +46,9 @@ func readFile(fileForRead string, tmp bool) []string {
 
 func compareFiles(fileName string, fileNameMain *string) {
 	if assertEq(readFile(fileName, true), readFile(*fileNameMain, false)) {
-		fmt.Println("Rules files are equal")
+		//Do nothing.
 	} else {
-		fmt.Println("ALARM, IPTABLES IS CORRUPTED")
+		utils.SendMessageToSlack(utils.AlarmMessage, utils.RedColor)
 	}
 }
 

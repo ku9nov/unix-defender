@@ -23,7 +23,7 @@ func SigTerm(ipV4file string, ipV6file string) {
 			}
 			fmt.Println("Succesfully removed:", s)
 		}
-
+		SendMessageToSlack(DisabledMessage, RedColor)
 		os.Exit(1)
 	}()
 }

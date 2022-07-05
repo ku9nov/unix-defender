@@ -17,12 +17,16 @@ const (
 )
 
 type Config struct {
-	Protocol      string `mapstructure:"PROTOCOL"`
-	Host          string `mapstructure:"SCAN_HOST"`
-	PortsAmount   int    `mapstructure:"PORTS_AMOUNT"`
-	RulesFile     string `mapstructure:"RULES_FILE"`
-	RulesBackupV4 string `mapstructure:"SAVE_IPV4_FILE"`
-	RulesBackupV6 string `mapstructure:"SAVE_IPV6_FILE"`
+	Protocol       string `mapstructure:"PROTOCOL"`
+	Host           string `mapstructure:"SCAN_HOST"`
+	PortsAmount    int    `mapstructure:"PORTS_AMOUNT"`
+	RulesFile      string `mapstructure:"RULES_FILE"`
+	RulesBackupV4  string `mapstructure:"SAVE_IPV4_FILE"`
+	RulesBackupV6  string `mapstructure:"SAVE_IPV6_FILE"`
+	SlackEnable    bool   `mapstructure:"SLACK_ENABLE"`
+	SlackSendFiles bool   `mapstructure:"SEND_CONF_FILES_TO_SLACK"`
+	SlackAuthToken string `mapstructure:"SLACK_AUTH_TOKEN"`
+	SlackChannelId string `mapstructure:"SLACK_CHANNEL_ID"`
 }
 
 type ConfigJson struct {
