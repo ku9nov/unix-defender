@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -10,13 +9,13 @@ import (
 )
 
 const (
-	InitialMessage     string = "Sucessfully configured and saved iptables rules."
-	AlarmMessage       string = "Alarm, configuration changed outside of app."
+	AlarmMessage       string = "Warning, configuration changed outside of app."
 	DisabledMessage    string = "Unix-defender is disabled"
 	StartMessage       string = "Unix-defender is started"
-	ReconfigureMessage string = "IpTables rules are reconfigured."
+	ReconfigureMessage string = "IpTable rules are reconfigured."
 	GreenColor         string = "#36a64f"
 	RedColor           string = "#FF0000"
+	BlueColor          string = "#496ee6"
 )
 
 func SendMessageToSlack(text, color string) {
@@ -27,12 +26,12 @@ func SendMessageToSlack(text, color string) {
 	if config.SlackEnable {
 		hostname, err := os.Hostname()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			os.Exit(1)
 		}
 		token := config.SlackAuthToken
 		channelID := config.SlackChannelId
-		client := slack.New(token, slack.OptionDebug(false))
+		client := slack.New(token, slack.OptionDebug(config.LoggingEnable))
 		attachment := slack.Attachment{
 			Title: "Unix-defender Notification",
 			Text:  text,
@@ -68,7 +67,7 @@ func SendMessageToSlack(text, color string) {
 				if err != nil {
 					panic(err)
 				}
-				fmt.Println("Files is uploaded:", file.Name)
+				log.Println("Files was upload to Slack:", file.Name)
 			}
 		}
 	}

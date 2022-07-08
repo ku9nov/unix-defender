@@ -46,8 +46,9 @@ func readFile(fileForRead string, tmp bool) []string {
 
 func compareFiles(fileName string, fileNameMain *string) {
 	if assertEq(readFile(fileName, true), readFile(filepath.Join(utils.MainDir, filepath.Base(*fileNameMain)), false)) {
-		//Do nothing.
+		log.Println(fileName, "and", *fileNameMain, "files are equal.")
 	} else {
+		log.Println(utils.AlarmMessage, "Tmp file:", readFile(fileName, true), "File with saved rules:", readFile(filepath.Join(utils.MainDir, filepath.Base(*fileNameMain)), false))
 		utils.SendMessageToSlack(utils.AlarmMessage, utils.RedColor)
 	}
 }
@@ -69,7 +70,7 @@ func SaveRulesTmp(saveCommand string, fileName string, fileNameMain *string) err
 	}
 	fi, err := os.Stat(*fileNameMain)
 	if err != nil {
-		fmt.Println("Can't find saved rules file:", *fileNameMain)
+		log.Println("Can't find saved rules file:", *fileNameMain)
 		return nil
 	} else {
 		_ = fi

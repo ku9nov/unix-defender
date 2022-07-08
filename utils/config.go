@@ -27,6 +27,7 @@ type Config struct {
 	SlackSendFiles bool   `mapstructure:"SEND_CONF_FILES_TO_SLACK"`
 	SlackAuthToken string `mapstructure:"SLACK_AUTH_TOKEN"`
 	SlackChannelId string `mapstructure:"SLACK_CHANNEL_ID"`
+	LoggingEnable  bool   `mapstructure:"ENABLE_LOGS"`
 }
 
 type ConfigJson struct {
@@ -39,8 +40,8 @@ type ConfigJson struct {
 }
 
 const (
-	EnvFile string = "/etc/unix-defender/.env"
-	MainDir string = "/etc/unix-defender/"
+	EnvFile string = ".env"
+	MainDir string = "."
 )
 
 func LoadConfigEnv(path string) (config Config, err error) {
