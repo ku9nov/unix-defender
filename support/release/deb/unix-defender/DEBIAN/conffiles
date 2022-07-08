@@ -1,0 +1,3 @@
+/etc/unix-defender/.env
+/etc/unix-defender/iptable-rules.json
+/etc/systemd/system/unix-defender.service
