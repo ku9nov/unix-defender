@@ -12,13 +12,14 @@ import (
 const (
 	InitialMessage  string = "Sucessfully configured and saved iptables rules."
 	AlarmMessage    string = "Alarm, configuration changed outside of app."
-	DisabledMessage string = "Unix-defender disabled"
+	DisabledMessage string = "Unix-defender is disabled"
+	StartMessage    string = "Unix-defender is started"
 	GreenColor      string = "#36a64f"
 	RedColor        string = "#FF0000"
 )
 
 func SendMessageToSlack(text, color string) {
-	config, err := LoadConfigEnv("../")
+	config, err := LoadConfigEnv(EnvFile)
 	if err != nil {
 		log.Fatal("Cannot load environment config:", err)
 	}

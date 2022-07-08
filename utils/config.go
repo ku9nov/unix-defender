@@ -38,9 +38,14 @@ type ConfigJson struct {
 	Version  string   `json:"version,omitempty"`
 }
 
+const (
+	EnvFile string = "/etc/unix-defender/.env"
+	MainDir string = "/etc/unix-defender/"
+)
+
 func LoadConfigEnv(path string) (config Config, err error) {
 	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
+	viper.SetConfigFile(EnvFile)
 	viper.SetConfigType("env")
 	// Use this for export environment to your bash session
 	// viper.AutomaticEnv()

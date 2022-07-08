@@ -62,6 +62,14 @@ func SaveRulesTmp(saveCommand string, fileName string, fileNameMain *string) err
 	if err != nil {
 		log.Fatal("Can't save iptables rules to file.", string(cmd), err)
 	}
+	fi, err := os.Stat(*fileNameMain)
+	if err != nil {
+		fmt.Println("Can't find saved rules file:", *fileNameMain)
+		return nil
+	} else {
+		_ = fi
+		//Do nothing.
+	}
 	writer := bufio.NewWriter(file)
 	fmt.Fprint(writer, string(cmd))
 	writer.Flush()

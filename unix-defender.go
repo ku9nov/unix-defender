@@ -16,7 +16,8 @@ var action string
 
 func main() {
 	// flag.BoolVar(&remove, "remove", false, "Remove the following firewall rules FOREVER (a very long time)!")
-	configEnv, err := utils.LoadConfigEnv(".")
+	rand.Seed(time.Now().UnixNano())
+	configEnv, err := utils.LoadConfigEnv(utils.EnvFile)
 	if err != nil {
 		log.Fatal("Cannot load environment config:", err)
 	}
@@ -33,18 +34,18 @@ func main() {
 	case "scan":
 		scanner.ScanPorts()
 	default:
-		fmt.Println("Nothing choiced, start cycle.")
-	}
+		fmt.Println("Unix-defender is successfully running in foreground mod.")
+		utils.SendMessageToSlack(utils.StartMessage, utils.GreenColor)
 
-	rand.Seed(time.Now().UnixNano())
-	fileNameIpv4 := utils.RandomString(44)
-	fileNameIpv6 := utils.RandomString(66)
-	utils.SigTerm(fileNameIpv4, fileNameIpv6)
-	for {
-		time.Sleep(10 * time.Second)
-		checker.SaveRulesTmp(utils.SaveIpv4Command, fileNameIpv4, &configEnv.RulesBackupV4)
-		checker.SaveRulesTmp(utils.SaveIpv6Command, fileNameIpv6, &configEnv.RulesBackupV6)
-		fmt.Println("Tmp file is saved. Name: ", fileNameIpv4, "and", fileNameIpv6)
+		fileNameIpv4 := utils.RandomString(44)
+		fileNameIpv6 := utils.RandomString(66)
+		utils.SigTerm(fileNameIpv4, fileNameIpv6)
+		for {
+			time.Sleep(10 * time.Second)
+			checker.SaveRulesTmp(utils.SaveIpv4Command, fileNameIpv4, &configEnv.RulesBackupV4)
+			checker.SaveRulesTmp(utils.SaveIpv6Command, fileNameIpv6, &configEnv.RulesBackupV6)
+			// fmt.Println("Tmp file is saved. Name: ", fileNameIpv4, "and", fileNameIpv6)
+		}
 	}
 
 }

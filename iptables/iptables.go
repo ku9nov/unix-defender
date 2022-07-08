@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"unix-defender/utils"
 )
 
@@ -18,7 +19,7 @@ func clearRules(IPv string) error {
 }
 
 func saveRules(saveCommand string, fileName *string) error {
-	file, err := os.OpenFile(*fileName, os.O_WRONLY|os.O_CREATE, 0600)
+	file, err := os.OpenFile(filepath.Join(utils.MainDir, filepath.Base(*fileName)), os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal("File with saved rules not exists or cannot be created", err)
 	}
@@ -39,7 +40,9 @@ func RestoreRules(restoreCommand string, fileName *string) error {
 	if err != nil {
 		log.Fatal("Can't restore rules: ", string(cmd), err)
 	}
+	// defer os.Exit(1)
 	return nil
+
 }
 
 func process(rules *utils.ConfigJson) error {
@@ -104,14 +107,16 @@ func ipTablesManage(args ...string) error {
 }
 
 func IpTables() {
-	configEnv, err := utils.LoadConfigEnv("../")
+	configEnv, err := utils.LoadConfigEnv(utils.EnvFile)
 	if err != nil {
 		log.Fatal("Cannot load environment config:", err)
 	}
-	path := configEnv.RulesFile
+	path := filepath.Join(utils.MainDir, filepath.Base(configEnv.RulesFile))
 	configs, err := utils.LoadConfigJson(path)
 	if err != nil {
-		log.Fatal("Cannot load Json config:", err)
+		fmt.Println("Cannot load Json config:", err)
+		return
+
 	}
 
 	clearRules("IPv4")
@@ -124,4 +129,5 @@ func IpTables() {
 	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
 	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
 	utils.SendMessageToSlack(utils.InitialMessage, utils.GreenColor)
+	// os.Exit(1)
 }
