@@ -45,7 +45,7 @@ func readFile(fileForRead string, tmp bool) []string {
 }
 
 func compareFiles(fileName string, fileNameMain *string) {
-	if assertEq(readFile(fileName, true), readFile(*fileNameMain, false)) {
+	if assertEq(readFile(fileName, true), readFile(filepath.Join(utils.MainDir, filepath.Base(*fileNameMain)), false)) {
 		//Do nothing.
 	} else {
 		utils.SendMessageToSlack(utils.AlarmMessage, utils.RedColor)
@@ -53,6 +53,11 @@ func compareFiles(fileName string, fileNameMain *string) {
 }
 
 func SaveRulesTmp(saveCommand string, fileName string, fileNameMain *string) error {
+	err := os.Remove(filepath.Join("/tmp", filepath.Base(fileName)))
+	if err != nil {
+		_ = err
+		//Do nothing.
+	}
 	file, err := os.OpenFile(filepath.Join("/tmp", filepath.Base(fileName)), os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal("File with saved rules not exists or cannot be created", err)

@@ -10,12 +10,13 @@ import (
 )
 
 const (
-	InitialMessage  string = "Sucessfully configured and saved iptables rules."
-	AlarmMessage    string = "Alarm, configuration changed outside of app."
-	DisabledMessage string = "Unix-defender is disabled"
-	StartMessage    string = "Unix-defender is started"
-	GreenColor      string = "#36a64f"
-	RedColor        string = "#FF0000"
+	InitialMessage     string = "Sucessfully configured and saved iptables rules."
+	AlarmMessage       string = "Alarm, configuration changed outside of app."
+	DisabledMessage    string = "Unix-defender is disabled"
+	StartMessage       string = "Unix-defender is started"
+	ReconfigureMessage string = "IpTables rules are reconfigured."
+	GreenColor         string = "#36a64f"
+	RedColor           string = "#FF0000"
 )
 
 func SendMessageToSlack(text, color string) {

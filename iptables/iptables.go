@@ -19,6 +19,11 @@ func clearRules(IPv string) error {
 }
 
 func saveRules(saveCommand string, fileName *string) error {
+	err := os.Remove(filepath.Join(utils.MainDir, filepath.Base(*fileName)))
+	if err != nil {
+		_ = err
+		//Do nothing.
+	}
 	file, err := os.OpenFile(filepath.Join(utils.MainDir, filepath.Base(*fileName)), os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal("File with saved rules not exists or cannot be created", err)
@@ -31,16 +36,21 @@ func saveRules(saveCommand string, fileName *string) error {
 	writer := bufio.NewWriter(file)
 	fmt.Fprint(writer, string(cmd))
 	writer.Flush()
+	if os.Stat(filepath.Join(utils.MainDir, filepath.Base(*fileName))); err != nil {
+		utils.SendMessageToSlack(utils.InitialMessage, utils.GreenColor)
+	} else {
+		utils.SendMessageToSlack(utils.ReconfigureMessage, utils.GreenColor)
+	}
+
 	return nil
 }
 
 func RestoreRules(restoreCommand string, fileName *string) error {
-
-	cmd, err := exec.Command(restoreCommand, *fileName).CombinedOutput()
+	file := filepath.Join(utils.MainDir, filepath.Base(*fileName))
+	cmd, err := exec.Command(restoreCommand, file).CombinedOutput()
 	if err != nil {
 		log.Fatal("Can't restore rules: ", string(cmd), err)
 	}
-	// defer os.Exit(1)
 	return nil
 
 }
@@ -128,6 +138,4 @@ func IpTables() {
 	}
 	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
 	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
-	utils.SendMessageToSlack(utils.InitialMessage, utils.GreenColor)
-	// os.Exit(1)
 }

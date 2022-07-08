@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 	"sort"
 
 	"unix-defender/utils"
@@ -33,7 +32,6 @@ func LocalAddresses() {
 
 		}
 	}
-	os.Exit(1)
 }
 
 func worker(ports chan int, protocol string, host string, results chan int) {
@@ -87,5 +85,4 @@ func ScanPorts() {
 	for _, port := range openports {
 		fmt.Printf("%d %v Open \n", port, config.Protocol)
 	}
-	// os.Exit(1)
 }
