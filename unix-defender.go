@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"time"
@@ -23,6 +23,10 @@ func main() {
 	}
 	flag.StringVar(&action, "action", "default", "Use for choice scanning ports or manage iptables. It can be 'scan', 'manage' or 'interfaces'.")
 	flag.Parse()
+	if !configEnv.LoggingEnable {
+		log.SetFlags(0)
+		log.SetOutput(ioutil.Discard)
+	}
 	switch action {
 	case "manage":
 		iptables.IpTables()
@@ -34,9 +38,8 @@ func main() {
 	case "scan":
 		scanner.ScanPorts()
 	default:
-		fmt.Println("Unix-defender is successfully running in foreground mod.")
-		utils.SendMessageToSlack(utils.StartMessage, utils.GreenColor)
-
+		log.Println("Unix-defender is successfully running in foreground mode.")
+		utils.SendMessageToSlack(utils.StartMessage, utils.BlueColor)
 		fileNameIpv4 := utils.RandomString(44)
 		fileNameIpv6 := utils.RandomString(66)
 		utils.SigTerm(fileNameIpv4, fileNameIpv6)
@@ -44,7 +47,7 @@ func main() {
 			time.Sleep(10 * time.Second)
 			checker.SaveRulesTmp(utils.SaveIpv4Command, fileNameIpv4, &configEnv.RulesBackupV4)
 			checker.SaveRulesTmp(utils.SaveIpv6Command, fileNameIpv6, &configEnv.RulesBackupV6)
-			// fmt.Println("Tmp file is saved. Name: ", fileNameIpv4, "and", fileNameIpv6)
+			log.Println("Tmp file is saved. Name: ", fileNameIpv4, "and", fileNameIpv6)
 		}
 	}
 

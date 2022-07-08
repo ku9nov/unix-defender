@@ -15,6 +15,7 @@ func clearRules(IPv string) error {
 	if err := ipTablesManage(IPv, "-F"); err != nil {
 		log.Fatal(err)
 	}
+	log.Println(IPv, "rules removed.")
 	return nil
 }
 
@@ -36,11 +37,6 @@ func saveRules(saveCommand string, fileName *string) error {
 	writer := bufio.NewWriter(file)
 	fmt.Fprint(writer, string(cmd))
 	writer.Flush()
-	if os.Stat(filepath.Join(utils.MainDir, filepath.Base(*fileName))); err != nil {
-		utils.SendMessageToSlack(utils.InitialMessage, utils.GreenColor)
-	} else {
-		utils.SendMessageToSlack(utils.ReconfigureMessage, utils.GreenColor)
-	}
 
 	return nil
 }
@@ -124,11 +120,9 @@ func IpTables() {
 	path := filepath.Join(utils.MainDir, filepath.Base(configEnv.RulesFile))
 	configs, err := utils.LoadConfigJson(path)
 	if err != nil {
-		fmt.Println("Cannot load Json config:", err)
+		log.Println("Cannot load Json config:", err)
 		return
-
 	}
-
 	clearRules("IPv4")
 	clearRules("IPv6")
 	for _, rules := range configs {
@@ -138,4 +132,5 @@ func IpTables() {
 	}
 	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
 	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
+	utils.SendMessageToSlack(utils.ReconfigureMessage, utils.GreenColor)
 }

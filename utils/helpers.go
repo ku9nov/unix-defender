@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -21,7 +20,7 @@ func SigTerm(ipV4file string, ipV6file string) {
 			if e != nil {
 				log.Fatal(e)
 			}
-			fmt.Println("Succesfully removed:", s)
+			log.Println("Succesfully removed:", s)
 		}
 		SendMessageToSlack(DisabledMessage, RedColor)
 		os.Exit(1)
