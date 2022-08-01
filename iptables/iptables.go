@@ -130,6 +130,7 @@ func IpTables() {
 			log.Fatal(err)
 		}
 	}
+	log.Println("Successfully added new iptables rules.")
 	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
 	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
 	utils.SendMessageToSlack(utils.ReconfigureMessage, utils.GreenColor)
