@@ -17,12 +17,17 @@ const (
 )
 
 type Config struct {
-	Protocol      string `mapstructure:"PROTOCOL"`
-	Host          string `mapstructure:"SCAN_HOST"`
-	PortsAmount   int    `mapstructure:"PORTS_AMOUNT"`
-	RulesFile     string `mapstructure:"RULES_FILE"`
-	RulesBackupV4 string `mapstructure:"SAVE_IPV4_FILE"`
-	RulesBackupV6 string `mapstructure:"SAVE_IPV6_FILE"`
+	Protocol       string `mapstructure:"PROTOCOL"`
+	Host           string `mapstructure:"SCAN_HOST"`
+	PortsAmount    int    `mapstructure:"PORTS_AMOUNT"`
+	RulesFile      string `mapstructure:"RULES_FILE"`
+	RulesBackupV4  string `mapstructure:"SAVE_IPV4_FILE"`
+	RulesBackupV6  string `mapstructure:"SAVE_IPV6_FILE"`
+	SlackEnable    bool   `mapstructure:"SLACK_ENABLE"`
+	SlackSendFiles bool   `mapstructure:"SEND_CONF_FILES_TO_SLACK"`
+	SlackAuthToken string `mapstructure:"SLACK_AUTH_TOKEN"`
+	SlackChannelId string `mapstructure:"SLACK_CHANNEL_ID"`
+	LoggingEnable  bool   `mapstructure:"ENABLE_LOGS"`
 }
 
 type ConfigJson struct {
@@ -34,9 +39,14 @@ type ConfigJson struct {
 	Version  string   `json:"version,omitempty"`
 }
 
+const (
+	EnvFile string = "/etc/unix-defender/.env"
+	MainDir string = "/etc/unix-defender/"
+)
+
 func LoadConfigEnv(path string) (config Config, err error) {
 	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
+	viper.SetConfigFile(EnvFile)
 	viper.SetConfigType("env")
 	// Use this for export environment to your bash session
 	// viper.AutomaticEnv()

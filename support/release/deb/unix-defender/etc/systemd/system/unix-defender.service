@@ -1,0 +1,17 @@
+[Unit]
+Description=Unix-defender service.
+ConditionPathExists=/usr/bin/unix-defender
+After=network.target
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/etc/unix-defender
+ExecStart=/usr/bin/unix-defender
+Restart=on-failure
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=unix-defender
+[Install]
+WantedBy=multi-user.target

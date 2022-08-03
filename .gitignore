@@ -1,3 +1,6 @@
-unix-defender
-.env
-iptable-rules.json
+/unix-defender
+/.env
+/iptable-rules.json
+/support/release/deb/unix-defender/usr/bin/unix-defender
+output
+/support/release/rpm/unix-defender-*/usr/bin/unix-defender

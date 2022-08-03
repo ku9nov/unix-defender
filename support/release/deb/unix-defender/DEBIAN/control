@@ -1,0 +1,6 @@
+Package: unix-defender
+Architecture: all
+Maintainer: Serhii Kuyanov
+Priority: optional
+Version: 0.0.2
+Description: Unix-defender

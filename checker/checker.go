@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
+	"unix-defender/utils"
 )
 
 func assertEq(first []string, second []string) bool {
@@ -44,14 +45,20 @@ func readFile(fileForRead string, tmp bool) []string {
 }
 
 func compareFiles(fileName string, fileNameMain *string) {
-	if assertEq(readFile(fileName, true), readFile(*fileNameMain, false)) {
-		fmt.Println("Rules files are equal")
+	if assertEq(readFile(fileName, true), readFile(filepath.Join(utils.MainDir, filepath.Base(*fileNameMain)), false)) {
+		log.Println(fileName, "and", *fileNameMain, "files are equal.")
 	} else {
-		fmt.Println("ALARM, IPTABLES IS CORRUPTED")
+		log.Println(utils.AlarmMessage, "Tmp file:", readFile(fileName, true), "File with saved rules:", readFile(filepath.Join(utils.MainDir, filepath.Base(*fileNameMain)), false))
+		utils.SendMessageToSlack(utils.AlarmMessage, utils.RedColor)
 	}
 }
 
 func SaveRulesTmp(saveCommand string, fileName string, fileNameMain *string) error {
+	err := os.Remove(filepath.Join("/tmp", filepath.Base(fileName)))
+	if err != nil {
+		_ = err
+		//Do nothing.
+	}
 	file, err := os.OpenFile(filepath.Join("/tmp", filepath.Base(fileName)), os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal("File with saved rules not exists or cannot be created", err)
@@ -60,6 +67,14 @@ func SaveRulesTmp(saveCommand string, fileName string, fileNameMain *string) err
 	cmd, err := exec.Command(saveCommand).CombinedOutput()
 	if err != nil {
 		log.Fatal("Can't save iptables rules to file.", string(cmd), err)
+	}
+	fi, err := os.Stat(*fileNameMain)
+	if err != nil {
+		log.Println("Can't find saved rules file:", *fileNameMain)
+		return nil
+	} else {
+		_ = fi
+		//Do nothing.
 	}
 	writer := bufio.NewWriter(file)
 	fmt.Fprint(writer, string(cmd))

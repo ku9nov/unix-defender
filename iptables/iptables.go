@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"unix-defender/utils"
 )
 
@@ -14,11 +15,17 @@ func clearRules(IPv string) error {
 	if err := ipTablesManage(IPv, "-F"); err != nil {
 		log.Fatal(err)
 	}
+	log.Println(IPv, "rules removed.")
 	return nil
 }
 
 func saveRules(saveCommand string, fileName *string) error {
-	file, err := os.OpenFile(*fileName, os.O_WRONLY|os.O_CREATE, 0600)
+	err := os.Remove(filepath.Join(utils.MainDir, filepath.Base(*fileName)))
+	if err != nil {
+		_ = err
+		//Do nothing.
+	}
+	file, err := os.OpenFile(filepath.Join(utils.MainDir, filepath.Base(*fileName)), os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatal("File with saved rules not exists or cannot be created", err)
 	}
@@ -30,16 +37,18 @@ func saveRules(saveCommand string, fileName *string) error {
 	writer := bufio.NewWriter(file)
 	fmt.Fprint(writer, string(cmd))
 	writer.Flush()
+
 	return nil
 }
 
 func RestoreRules(restoreCommand string, fileName *string) error {
-
-	cmd, err := exec.Command(restoreCommand, *fileName).CombinedOutput()
+	file := filepath.Join(utils.MainDir, filepath.Base(*fileName))
+	cmd, err := exec.Command(restoreCommand, file).CombinedOutput()
 	if err != nil {
 		log.Fatal("Can't restore rules: ", string(cmd), err)
 	}
 	return nil
+
 }
 
 func process(rules *utils.ConfigJson) error {
@@ -104,16 +113,16 @@ func ipTablesManage(args ...string) error {
 }
 
 func IpTables() {
-	configEnv, err := utils.LoadConfigEnv("../")
+	configEnv, err := utils.LoadConfigEnv(utils.EnvFile)
 	if err != nil {
 		log.Fatal("Cannot load environment config:", err)
 	}
-	path := configEnv.RulesFile
+	path := filepath.Join(utils.MainDir, filepath.Base(configEnv.RulesFile))
 	configs, err := utils.LoadConfigJson(path)
 	if err != nil {
-		log.Fatal("Cannot load Json config:", err)
+		log.Println("Cannot load Json config:", err)
+		return
 	}
-
 	clearRules("IPv4")
 	clearRules("IPv6")
 	for _, rules := range configs {
@@ -121,6 +130,8 @@ func IpTables() {
 			log.Fatal(err)
 		}
 	}
+	log.Println("Successfully added new iptables rules.")
 	saveRules(utils.SaveIpv4Command, &configEnv.RulesBackupV4)
 	saveRules(utils.SaveIpv6Command, &configEnv.RulesBackupV6)
+	utils.SendMessageToSlack(utils.ReconfigureMessage, utils.GreenColor)
 }

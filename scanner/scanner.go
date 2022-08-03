@@ -47,7 +47,7 @@ func worker(ports chan int, protocol string, host string, results chan int) {
 	}
 }
 func ScanPorts() {
-	config, err := utils.LoadConfigEnv("../")
+	config, err := utils.LoadConfigEnv(utils.EnvFile)
 	if err != nil {
 		log.Fatal("Cannot load environment config:", err)
 	}
