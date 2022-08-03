@@ -1,7 +1,7 @@
 all: deb-build
 
 clean:
-	rm -rf output unix-defender/usr/local/bin/unix-defender
+	rm -rf output unix-defender/usr/bin/unix-defender
 	docker rmi -f deb-builder
 
 

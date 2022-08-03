@@ -40,8 +40,8 @@ type ConfigJson struct {
 }
 
 const (
-	EnvFile string = ".env"
-	MainDir string = "."
+	EnvFile string = "/etc/unix-defender/.env"
+	MainDir string = "/etc/unix-defender/"
 )
 
 func LoadConfigEnv(path string) (config Config, err error) {
