@@ -10,7 +10,9 @@ export PATCH=$((PATCH+1))
 export VERSION="${MAJOR}.${MINOR}.${PATCH}"
 echo ${VERSION}>VERSION
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    gsed -i "s/${OLDVER}/${VERSION}/" unix-defender/DEBIAN/control
+    gsed -i "s/${OLDVER}/${VERSION}/" unix-defender.spec
 else
-    sed -i "s/${OLDVER}/${VERSION}/" unix-defender/DEBIAN/control
+    sed -i "s/${OLDVER}/${VERSION}/" unix-defender.spec
 fi
+cp -r unix-defender-${OLDVER} unix-defender-${VERSION}
+rm -r unix-defender-${OLDVER}
